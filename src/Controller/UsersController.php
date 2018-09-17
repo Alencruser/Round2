@@ -74,7 +74,7 @@ class UsersController extends AbstractController
        if(isset($_POST['login'])){
          $user = $this->getDoctrine()
          ->getRepository(Users::class)
-         ->findby(['Username' => $_POST['login']]);
+         ->findby(['Username' => htmlspecialchars($_POST['login'])]);
          if($user[0]->getUsername() == $_POST['login'] && $user[0]->getPassword() == $_POST['password']){
           $_SESSION['user']=$user[0]->getUsername();
           $_SESSION['id']=$user[0]->getId();
