@@ -32,6 +32,11 @@ class Objects
      */
     private $Name;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $gave;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +74,18 @@ class Objects
     public function setName(string $Name): self
     {
         $this->Name = $Name;
+
+        return $this;
+    }
+
+    public function getGave(): ?int
+    {
+        return $this->gave;
+    }
+
+    public function setGave(int $gave): self
+    {
+        $this->gave = $gave;
 
         return $this;
     }

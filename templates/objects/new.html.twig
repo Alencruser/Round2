@@ -4,9 +4,5 @@
 
 {% block body %}
     <h1>Create new Objects</h1>
-	<form action="/new" method="POST">
-		<input type="text" name="object">
-		<button type="submit" class='btn btn-primary'>Ajouter à votre compte</button>
-	</form>
-
+	{{ include('objects/_form.html.twig', {'button_label': 'Donner'}) }}
 {% endblock %}

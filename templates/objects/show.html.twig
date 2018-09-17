@@ -14,7 +14,7 @@
                     {% for word in account %}
                         <tr>
                             <td>
-                               <p>{{word}} <a href="/give/{{word}}"><button class="btn btn-primary">Donner cet objet</button></a></p>
+                                <p>{{word.Name}} <a href="/give/{{word.id}}"><button class="btn btn-primary">Donner cet objet</button></a></p>
                            </td>
                        </tr>
                    {% endfor %}
