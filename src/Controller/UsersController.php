@@ -50,7 +50,7 @@ class UsersController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        return $this->redirectToRoute('users_index');
+        return $this->redirectToRoute('objects_index');
       }
       if(isset($_SESSION['user'])&& strlen($_SESSION['user'])>1){
        return $this->render('users/new.html.twig', [
@@ -70,7 +70,6 @@ class UsersController extends AbstractController
      */
     public function login(Request $request): Response
     {
-      if(!isset($_SESSION['user']) || !strlen($_SESSION['user'])>0){
        if(isset($_POST['login'])){
          $user = $this->getDoctrine()
          ->getRepository(Users::class)
@@ -83,9 +82,9 @@ class UsersController extends AbstractController
           $this->addFlash('error','user or password incorrect');
           return $this->redirectToRoute('users_login');
         }
-      }
+      
     }
-    return $this->redirectToRoute('objects_index');
+    return $this->render('users/login.html.twig');
   }
     /**
      * @Route("/logout", name="users_logout", methods="GET")

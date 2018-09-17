@@ -5,6 +5,7 @@
     {% block body %}
         <h1>Mes objets</h1>
         <a href="/new"><button class="btn btn-primary btn-sm">Ajouter un objet</button></a><br>
+        {% if account is defined %}
         {% if account|length > 0 %}
             <table class="table">
                 <tbody>
@@ -23,6 +24,8 @@
        {% else %}
         <p>Vous n'avez pas d'objets sur votre compte</p>
     {% endif %}
+    {% endif %}
+    {% if objects is defined %}
     {% if objects|length > 0%}
     <h3>Vos objets déjà en vente</h3>
     <table class="table">
@@ -46,6 +49,7 @@
     </table>
 {% else %}
     <p>Vous ne posseder pas d'objets en vente</p>
+{% endif %}
 {% endif %}
 <a href="{{ path('objects_index') }}">back to list</a>
 {% endblock %}
