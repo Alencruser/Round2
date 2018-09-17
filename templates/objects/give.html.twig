@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Objects{% endblock %}
+
+{% block body %}
+    <h1>Donner un objet</h1>
+    {{ include('objects/_form.html.twig', {'button_label': 'Donner'}) }}
+{% endblock %}

@@ -23,46 +23,39 @@ class ObjectsController extends AbstractController
      */
     public function index(ObjectsRepository $objectsRepository): Response
     {
-       if(isset($_SESSION['user']) && strlen($_SESSION['user'])>1){
-            return $this->render('objects/index.html.twig', ['objects' => $objectsRepository->findAll(),'token'=>'login']);
-        }
-        return $this->render('objects/index.html.twig', ['objects' => $objectsRepository->findAll()]);
+     if(isset($_SESSION['user']) && strlen($_SESSION['user'])>1){
+        return $this->render('objects/index.html.twig', ['objects' => $objectsRepository->findAll(),'token'=>'login']);
     }
+    return $this->render('objects/index.html.twig', ['objects' => $objectsRepository->findAll()]);
+}
 
     /**
      * @Route("/new", name="objects_new", methods="GET|POST")
      */
     public function new(Request $request): Response
     {
-        $object = new Objects();
-        $form = $this->createFormBuilder($object)
-        ->add('Type',TextType::class)
-        ->add('Name',TextType::class)
-        ->getForm();
-        $user=$this->getDoctrine()->getRepository(Users::class)
-        ->find($_SESSION['id']);
-        $object->setUser($user);
-        $form->handleRequest($request);
+        $user=$this->getDoctrine()->getRepository(Users::class)->find($_SESSION['id']);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($object);
-            $em->flush();
-
+        if (isset($_POST['Object']) || strlen($_POST['Object']>0)) {
+            if($user->getObjects()==null){
+                $data=$_POST['Object'];
+            }else {
+                $data=$user->getObjects().",".$_POST['Object'];
+            }
+            $user->setObjects($data);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
             return $this->redirectToRoute('objects_index');
         }
+
         if(isset($_SESSION['user']) && strlen($_SESSION['user'])>1){
-           return $this->render('objects/new.html.twig', [
-            'object' => $object,
-            'form' => $form->createView(),
+         return $this->render('objects/new.html.twig', [
             'token'=>'login'
         ]);
-        }
-        return $this->render('objects/new.html.twig', [
-            'object' => $object,
-            'form' => $form->createView(),
-        ]);
-    }
+     }
+     return $this->render('objects/new.html.twig');
+ }
 
     /**
      * @Route("/show", name="objects_show", methods="GET")
@@ -70,42 +63,54 @@ class ObjectsController extends AbstractController
     public function show(): Response
     {
         if(isset($_SESSION['user']) && strlen($_SESSION['user'])>1){
+            $user=$this->getDoctrine()->getRepository(Users::class)->find($_SESSION['id']);
+            $notgave=explode(",", $user->getObjects());
             $userobjects = $this->getDoctrine()
-         ->getRepository(Objects::class)
-         ->findby(['user' => $_SESSION['id']]);
-         if ($userobjects!=null) {
-         return $this->render('objects/show.html.twig', ['objects'=>$userobjects,'token'=>'login']);    
-         }
-         return $this->render('objects/show.html.twig', ['token'=>'login']);
-        }
-        return $this->redirectToRoute('objects_index');
-    }
+            ->getRepository(Objects::class)
+            ->findby(['user' => $_SESSION['id']]);
+            if ($userobjects!=null || $notgave!=null) {
+               return $this->render('objects/show.html.twig', ['objects'=>$userobjects,'token'=>'login','account'=>$notgave]);    
+           }
+           return $this->render('objects/show.html.twig', ['token'=>'login']);
+       }
+       return $this->redirectToRoute('objects_index');
+   }
 
     /**
-     * @Route("/{id}/edit", name="objects_edit", methods="GET|POST")
+     * @Route("/give/{id}", name="objects_give", methods="GET|POST")
      */
-    public function edit(Request $request, Objects $object): Response
+    public function give(Request $request): Response
     {
-        $form = $this->createForm(ObjectsType::class, $object);
+        $word=explode('/',$request->getPathInfo());
+        $data=$word[count($word)-1];
+        $object= new Objects();
+        $form = $this->createFormBuilder($object)
+        ->add('Type',TextType::class)
+        ->add('Name',TextType::class,array(
+            'data'=>$data
+        ))
+        ->getForm();
+        $user=$this->getDoctrine()->getRepository(Users::class)->find($_SESSION['id']);
+        $object->setUser($user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('objects_edit', ['id' => $object->getId()]);
+            return $this->redirectToRoute('objects_index', ['id' => $object->getId()]);
         }
         if(isset($_SESSION['user']) && strlen($_SESSION['user'])>1){
-         return $this->render('objects/edit.html.twig', [
+           return $this->render('objects/give.html.twig', [
             'object' => $object,
             'form' => $form->createView(),
-            'token'=>'login'
+            'token'=>'login',
         ]);
-        }
-        return $this->render('objects/edit.html.twig', [
-            'object' => $object,
-            'form' => $form->createView(),
-        ]);
-    }
+       }
+       return $this->render('objects/give.html.twig', [
+        'object' => $object,
+        'form' => $form->createView(),
+    ]);
+   }
 
     /**
      * @Route("/{id}", name="objects_delete", methods="DELETE")

@@ -2,33 +2,50 @@
 
 {% block title %}Objects{% endblock %}
 
-{% block body %}
-    <h1>Mes objets</h1>
-    <a href="/new"><button class="btn btn-primary btn-sm">Ajouter un objet</button></a>
-{% if objects is defined %}
+    {% block body %}
+        <h1>Mes objets</h1>
+        <a href="/new"><button class="btn btn-primary btn-sm">Ajouter un objet</button></a><br>
+        {% if account|length > 0 %}
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Nom de votre objet</th>
+                    </tr>
+                    {% for word in account %}
+                        <tr>
+                            <td>
+                               <p>{{word}} <a href="/give/{{word}}"><button class="btn btn-primary">Donner cet objet</button></a></p>
+                           </td>
+                       </tr>
+                   {% endfor %}
+               </tbody>
+           </table><hr>
+       {% else %}
+        <p>Vous n'avez pas d'objets sur votre compte</p>
+    {% endif %}
+    {% if objects|length > 0%}
+    <h3>Vos objets déjà en vente</h3>
     <table class="table">
         <tbody>
-    {% for object in objects %}
-            <tr>
-                <th>Id</th>
-                <td>{{ object.id }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ object.Type }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ object.Name }}</td>
-            </tr>
-            <tr>
-                <!-- ici placer le donner -->
-            </tr>
-    {% endfor %}
+            {% for object in objects %}
+                <tr>
+                    <th>Id</th>
+                    <th>Type</th>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <td>{{ object.id }}</td>
+                    <td>{{ object.Type }}</td>
+                    <td>{{ object.Name }}</td>
+                </tr>
+                <tr>
+                    <!-- ici placer le donner -->
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% else %}
-    <p>Vous ne posseder pas d'objets</p>
+    <p>Vous ne posseder pas d'objets en vente</p>
 {% endif %}
-    <a href="{{ path('objects_index') }}">back to list</a>
+<a href="{{ path('objects_index') }}">back to list</a>
 {% endblock %}
