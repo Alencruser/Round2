@@ -21,8 +21,7 @@
                 <td>{{ object.Type }}</td>
                 <td>{{ object.Name }}</td>
                 <td>
-                    <a href="{{ path('objects_show', {'id': object.id}) }}">show</a>
-                    <a href="{{ path('objects_edit', {'id': object.id}) }}">edit</a>
+                <!-- ici placer le prendre -->
                 </td>
             </tr>
         {% else %}
@@ -32,6 +31,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('objects_new') }}">Create new</a>
 {% endblock %}

@@ -3,10 +3,12 @@
 {% block title %}Objects{% endblock %}
 
 {% block body %}
-    <h1>Objects</h1>
-
+    <h1>Mes objets</h1>
+    <a href="/new"><button class="btn btn-primary btn-sm">Ajouter un objet</button></a>
+{% if objects is defined %}
     <table class="table">
         <tbody>
+    {% for object in objects %}
             <tr>
                 <th>Id</th>
                 <td>{{ object.id }}</td>
@@ -19,12 +21,14 @@
                 <th>Name</th>
                 <td>{{ object.Name }}</td>
             </tr>
+            <tr>
+                <!-- ici placer le donner -->
+            </tr>
+    {% endfor %}
         </tbody>
     </table>
-
+{% else %}
+    <p>Vous ne posseder pas d'objets</p>
+{% endif %}
     <a href="{{ path('objects_index') }}">back to list</a>
-
-    <a href="{{ path('objects_edit', {'id': object.id}) }}">edit</a>
-
-    {{ include('objects/_delete_form.html.twig') }}
 {% endblock %}

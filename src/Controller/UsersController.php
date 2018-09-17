@@ -24,6 +24,9 @@ class UsersController extends AbstractController
      */
     public function index(UsersRepository $usersRepository): Response
     {
+        if(isset($_SESSION['user'])&& strlen($_SESSION['user'])>1){
+        return $this->render('users/index.html.twig', ['users' => $usersRepository->findAll(),'token'=>'login']);    
+        }
         return $this->render('users/index.html.twig', ['users' => $usersRepository->findAll()]);
     }
 
@@ -49,7 +52,13 @@ class UsersController extends AbstractController
 
             return $this->redirectToRoute('users_index');
         }
-
+        if(isset($_SESSION['user'])&& strlen($_SESSION['user'])>1){
+           return $this->render('users/new.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+            'token'=>'login'
+        ]); 
+        }
         return $this->render('users/new.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
@@ -81,6 +90,9 @@ class UsersController extends AbstractController
   }
   else 
   {
+    if(isset($_SESSION['user'])&& strlen($_SESSION['user'])>1){
+        return $this->render('users/login.html.twig',['token'=>'login']);    
+        }
     return $this->render('users/login.html.twig');
 }
 }
@@ -98,7 +110,13 @@ class UsersController extends AbstractController
 
             return $this->redirectToRoute('users_edit', ['id' => $user->getId()]);
         }
-
+         if(isset($_SESSION['user'])&& strlen($_SESSION['user'])>1){
+           return $this->render('users/edit.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+            'token'=>'login'
+        ]);
+        }
         return $this->render('users/edit.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
